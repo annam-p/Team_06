@@ -1,6 +1,7 @@
 package com.team06.focuswork.ui.overview
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,33 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.team06.focuswork.R
 import com.team06.focuswork.data.Task
+import com.team06.focuswork.model.TasksViewModel
 import java.util.*
 
 
 class TaskAdapter(private val context: Context, private val overviewFragment: OverviewFragment)
     : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-    private val list = mutableListOf<Task>()
+    private val list = overviewFragment.getAllTasks()
 
     init {
-        list.add(
-            Task(
-                "Erste Aufgabe",
-                "Dies ist eine Aufgabenbeschr.",
-                Calendar.getInstance(),
-                Calendar.getInstance()
-            )
-        )
-        list.add(
-            Task(
-                "Zweite Aufgabe",
-                "Dies ist weitere Aufgabenbeschr.",
-                Calendar.getInstance(),
-                Calendar.getInstance()
-            )
-        )
-
-
         Log.d("TaskAdapter", list.toString())
     }
 
@@ -49,52 +33,41 @@ class TaskAdapter(private val context: Context, private val overviewFragment: Ov
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val layout = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.task_item_view, parent, false)
+                .from(parent.context)
+                .inflate(R.layout.task_item_view, parent, false)
         return TaskViewHolder(layout)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+
         val item = list[position]
         val dateFormat: java.text.DateFormat? = DateFormat.getTimeFormat(holder.view.context)
 
         holder.taskItem.findViewById<TextView>(R.id.task_item_title).text = item.taskName
-        val startTimeText : TextView = holder.taskItem.findViewById(R.id.task_item_start_time)
+        val startTimeText: TextView = holder.taskItem.findViewById(R.id.task_item_start_time)
         startTimeText.text = dateFormat?.format(item.startTime.time)
-        val endTimeTextView : TextView = holder.taskItem.findViewById(R.id.task_item_end_time)
+        val endTimeTextView: TextView = holder.taskItem.findViewById(R.id.task_item_end_time)
         endTimeTextView.text = dateFormat?.format(item.endTime.time)
 
         holder.taskItem.background = if (position % 2 == 0)
-            ResourcesCompat.getDrawable(
-                context.resources,
-                R.drawable.rectangle_rounded_corners_heavy,
-                null
-            )
-        else
-            ResourcesCompat.getDrawable(
-                context.resources,
-                R.drawable.rectangle_rounded_corners_light,
-                null
-            )
+            chooseBackGround(R.drawable.rectangle_rounded_corners_heavy) else
+            chooseBackGround(R.drawable.rectangle_rounded_corners_light)
 
         Log.d("TaskAdapter", item.taskName)
         holder.taskItem.setOnClickListener {
-            Toast.makeText(
-                holder.view.context,
-                item.taskName + ": " + item.taskDescription,
-                Toast.LENGTH_LONG
-            ).show()
+            showToast(item.taskName + ": " + item.taskDescription)
             overviewFragment.onClickTaskItem(item)
-
-
-            /*holder.view.findNavController().navigate(
-                R.id.action_nav_overview_to_nav_taskdetails,
-                item
-            )*/
-
-
-            //TODO: open new task fragment here
         }
+    }
+
+    private fun chooseBackGround(drawableId: Int): Drawable? = ResourcesCompat.getDrawable(
+            context.resources,
+            drawableId,
+            null
+    )
+
+    private fun showToast(message: String) {
+        Toast.makeText(context.applicationContext, message, Toast.LENGTH_LONG).show()
     }
 
     override fun getItemCount() = list.size

@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.team06.focuswork.data.Task
 
-class TasksViewModel() : ViewModel() {
+class TasksViewModel : ViewModel() {
 
     private var _title = MutableLiveData<String>()
     val title: LiveData<String> = _title
@@ -30,5 +30,9 @@ class TasksViewModel() : ViewModel() {
         _description.apply { value = task.taskDescription }
         _startTime.apply { value = dateFormat.format(task.startTime.time) }
         _endTime.apply { value = dateFormat.format(task.endTime.time) }
+    }
+
+    fun setTasks(tasks: List<Task>) {
+        _allTasks.apply { value = tasks }
     }
 }
