@@ -24,6 +24,7 @@ import com.team06.focuswork.R
 import com.team06.focuswork.data.Task
 import com.team06.focuswork.databinding.FragmentOverviewBinding
 import com.team06.focuswork.model.TasksViewModel
+import com.team06.focuswork.ui.taskdetails.TaskdetailsFragment
 
 class OverviewFragment : Fragment() {
 

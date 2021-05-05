@@ -13,22 +13,14 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.firestore.FirebaseFirestore
-import com.team06.focuswork.data.FireBaseFireStoreUtil
 import com.team06.focuswork.data.LoginRepository
-import com.team06.focuswork.data.Task
-import com.team06.focuswork.model.TasksViewModel
-import com.team06.focuswork.ui.util.CalendarTimestampUtil
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var tasksViewModel: TasksViewModel
     private val fireStoreUtil = FireBaseFireStoreUtil()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +31,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        tasksViewModel = ViewModelProvider(this).get(TasksViewModel::class.java)
+        //TODO: load tasks from db into viewmodel after login
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { _ ->
