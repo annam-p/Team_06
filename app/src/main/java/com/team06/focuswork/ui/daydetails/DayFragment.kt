@@ -22,8 +22,6 @@ import com.team06.focuswork.databinding.FragmentDayBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-private lateinit var binding: FragmentDayBinding
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_DAY = "day"
@@ -36,6 +34,7 @@ private const val ARG_DAY = "day"
 class DayFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var day: Calendar? = null
+    private lateinit var binding: FragmentDayBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +43,10 @@ class DayFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentDayBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -56,55 +56,67 @@ class DayFragment : Fragment() {
 
         val cal = day ?: Calendar.getInstance()
 
-        val day_name = SimpleDateFormat("EEEE").format(cal.time)
-        val text = SpannableString(String.format("%s %s, %d.%d.", getString(R.string.day_tasks_for), day_name,
-            cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1))
-        text.setSpan(StyleSpan(Typeface.BOLD), getString(R.string.day_tasks_for).length+1,
-            day_name.length + getString(R.string.day_tasks_for).length + 2,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val dayName = SimpleDateFormat("EEEE").format(cal.time)
+        val text = SpannableString(
+            String.format(
+                "%s %s, %d.%d.", getString(R.string.day_tasks_for), dayName,
+                cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1
+            )
+        )
+        text.setSpan(
+            StyleSpan(Typeface.BOLD), getString(R.string.day_tasks_for).length + 1,
+            dayName.length + getString(R.string.day_tasks_for).length + 2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         binding.textviewTitle.text = text
 
         FireBaseFireStoreUtil().retrieveTasks { tasks -> populateList(tasks) }
     }
 
-    fun populateList(list: List<Task>)
-    {
+    private fun populateList(list: List<Task>) {
         val adapter = TaskAdapter(requireContext(), android.R.layout.simple_list_item_1, list)
         binding.progressbar.visibility = View.GONE
         binding.listTasks.adapter = adapter
-        binding.listTasks.setOnItemClickListener {
-                parent, view, position, id -> showTaskInfo(adapter.getItem(position))
+        binding.listTasks.setOnItemClickListener { _, _, position, _ ->
+            showTaskInfo(adapter.getItem(position))
         }
     }
 
-    fun showTaskInfo(task: Task){
+    private fun showTaskInfo(task: Task) {
         val alertDialog: AlertDialog = AlertDialog.Builder(requireContext()).create()
         alertDialog.setTitle(task.taskName)
-        alertDialog.setMessage(String.format("%s\n%s - %s",
-            task.taskDescription, getFormattedDate(task.startTime), getFormattedDate(task.endTime)))
-        //alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ -> dialog.dismiss() }
+        alertDialog.setMessage(
+            String.format(
+                "%s\n%s - %s",
+                task.taskDescription,
+                getFormattedDate(task.startTime),
+                getFormattedDate(task.endTime)
+            )
+        )
         alertDialog.show()
     }
 
     companion object {
         private fun getFormattedDate(cal: Calendar): String {
-            return String.format("%d:%02d, %d.%d.%d", cal.get(Calendar.HOUR_OF_DAY),
+            return String.format(
+                "%d:%02d, %d.%d.%d", cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE), cal.get(Calendar.DAY_OF_MONTH),
-                cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR))
+                cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)
+            )
         }
     }
 
-    class TaskAdapter(context: Context, textViewResourceId: Int, val data: List<Task>)
-        : ArrayAdapter<Task>(context, textViewResourceId){
+    class TaskAdapter(context: Context, textViewResourceId: Int, val data: List<Task>) :
+        ArrayAdapter<Task>(context, textViewResourceId) {
 
         //API does not support streams/lambdas, saddening me
-        private val tasks : List<Task>
-        init{
+        private val tasks: List<Task>
+
+        init {
             val localList: MutableList<Task> = mutableListOf()
-            for (task in data)
-            {
+            for (task in data) {
                 //We don't care about the year-to-day conversion being accurate
-                //since we only care about what day comes first, meaning leaving 1 day unsused
+                //since we only care about what day comes first, meaning leaving 1 day unused
                 //for most years is of no consequence
                 val cal = Calendar.getInstance()
                 val startDay = task.startTime.get(Calendar.DAY_OF_YEAR) +
@@ -114,7 +126,7 @@ class DayFragment : Fragment() {
                 val currentDay = cal.get(Calendar.DAY_OF_YEAR) +
                         cal.get(Calendar.YEAR) * 366
 
-                if(currentDay in startDay..endDay)
+                if (currentDay in startDay..endDay)
                     localList.add(task)
 
             }
@@ -129,7 +141,7 @@ class DayFragment : Fragment() {
             return tasks[position]
         }
 
-        fun getItems(): List<Task>{
+        fun getItems(): List<Task> {
             return tasks
         }
 
@@ -142,11 +154,20 @@ class DayFragment : Fragment() {
             val label = super.getView(position, convertView, parent) as TextView
             label.setTextColor(Color.BLACK)
             label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0f)
-            val text = SpannableString(String.format("%s:\n%s %s\n%s %s", currentTask.taskName,
-                context.getString(R.string.day_from), getFormattedDate(currentTask.startTime),
-                context.getString(R.string.day_to), getFormattedDate(currentTask.endTime)))
+            val text = SpannableString(
+                String.format(
+                    "%s:\n%s %s\n%s %s", currentTask.taskName,
+                    context.getString(R.string.day_from), getFormattedDate(currentTask.startTime),
+                    context.getString(R.string.day_to), getFormattedDate(currentTask.endTime)
+                )
+            )
 
-            text.setSpan(StyleSpan(Typeface.BOLD), 0, currentTask.taskName.length + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            text.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                currentTask.taskName.length + 1,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             label.text = text
             return label
         }
