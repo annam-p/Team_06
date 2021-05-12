@@ -107,7 +107,7 @@ class OverviewFragment : Fragment() {
     }
 
     fun onClickTaskItem(task: Task) {
-        tasksViewModel.setSelectedTask(task, requireContext())
+        tasksViewModel.setSelectedTask(task)
         findNavController().navigate(R.id.action_nav_overview_to_nav_taskdetails)
     }
 
