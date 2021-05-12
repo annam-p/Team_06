@@ -57,14 +57,11 @@ class OverviewFragment : Fragment() {
             currentTasks.addAll(tasks)
             (recyclerView.adapter as TaskAdapter).notifyDataSetChanged()
         })
-
-
     }
 
     private fun createNotifChannel() {
-        // based off this tutorial
+        // based on this tutorial
         // https://www.youtube.com/watch?v=B5dgmvbrHgs
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Timer finished"
             val descriptionText = "The timer for your task has finished."
@@ -81,7 +78,7 @@ class OverviewFragment : Fragment() {
     }
 
     private fun sendNotif(view: View) {
-        // based off this tutorial
+        // based on this tutorial
         // out first notification, navigates back to app by clicking on it
         // https://www.youtube.com/watch?v=B5dgmvbrHgs
         val intent = Intent(requireContext(), MainActivity::class.java).apply {
