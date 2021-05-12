@@ -3,6 +3,7 @@ package com.team06.focuswork
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -14,18 +15,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.firestore.FirebaseFirestore
-import com.team06.focuswork.data.FireBaseFireStoreUtil
-import com.team06.focuswork.data.LoginRepository
-import com.team06.focuswork.data.Task
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.team06.focuswork.model.TasksViewModel
-import com.team06.focuswork.ui.util.CalendarTimestampUtil
 import java.util.*
 
 

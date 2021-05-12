@@ -37,24 +37,24 @@ class LoginInstrumentedTest {
 
     private fun clickRegister() {
         Espresso.onView(ViewMatchers.withId(R.id.register))
-                .perform(ViewActions.click())
+            .perform(ViewActions.click())
     }
 
     private fun deleteUser(username: String) {
         FirebaseFirestore.getInstance()
-                .collection("User")
-                .whereEqualTo("email", username)
-                .get().addOnSuccessListener { document ->
-                    assert(document.documents.size < 2)
-                    if (document.documents.isEmpty()) {
-                        return@addOnSuccessListener
-                    }
-                    FirebaseFirestore
-                            .getInstance()
-                            .collection("User")
-                            .document(document.documents[0].id)
-                            .delete()
+            .collection("User")
+            .whereEqualTo("email", username)
+            .get().addOnSuccessListener { document ->
+                assert(document.documents.size < 2)
+                if (document.documents.isEmpty()) {
+                    return@addOnSuccessListener
                 }
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("User")
+                    .document(document.documents[0].id)
+                    .delete()
+            }
     }
 
     @Test
@@ -70,15 +70,15 @@ class LoginInstrumentedTest {
         deleteUser("newTest@gmail.com")
         setLoginData("newTest@gmail.com", "aosjkgaod")
         clickRegister()
-        Espresso.onView(ViewMatchers.withId(R.id.recycler_view))
-                .check(matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.container_register_activity))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
     fun disabledButtonsTest() {
         setLoginData("akjfamfgaksja@casf", "lajksfaj")
         Espresso.onView(ViewMatchers.withId(R.id.register))
-                .check(matches(not(ViewMatchers.isEnabled())))
+            .check(matches(ViewMatchers.isEnabled()))
         Espresso.onView(ViewMatchers.withId(R.id.login))
             .check(matches(not(ViewMatchers.isEnabled())))
     }
@@ -96,6 +96,6 @@ class LoginInstrumentedTest {
         setLoginData("newTest@gmail.com", "aosjkgaod")
         clickRegister()
         Espresso.onView(ViewMatchers.withId(R.id.login))
-                .check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 }
