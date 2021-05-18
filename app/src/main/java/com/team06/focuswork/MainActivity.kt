@@ -3,7 +3,7 @@ package com.team06.focuswork
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -48,8 +48,11 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_overview, R.id.nav_new_task, R.id.nav_settings), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_overview, R.id.nav_new_task, R.id.nav_settings
+            ), drawerLayout
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
@@ -59,13 +62,13 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         checkLocale()
 
         // set listener for settings
-        val preferences :SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         preferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onDestroy() {
         //Unregister settings listener
-        val preferences :SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         preferences.unregisterOnSharedPreferenceChangeListener(this)
 
         super.onDestroy()
@@ -77,14 +80,17 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
      */
     @Suppress("DEPRECATION")
     private fun checkLocale() {
-        val preferences :SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val languageKey = (preferences.getString("language", "en")).toString()
-        if(languageKey.toLowerCase() != resources.configuration.locale.language.toLowerCase())
+        if (languageKey.toLowerCase(Locale.getDefault()) != resources.configuration.locale.language.toLowerCase(
+                Locale.getDefault()
+            )
+        )
             onChangedLanguage(languageKey)
     }
 
     @Suppress("DEPRECATION")
-    private fun onChangedLanguage(languageKey: String){
+    private fun onChangedLanguage(languageKey: String) {
         val myLocale = Locale(languageKey)
         val dm: DisplayMetrics = resources.displayMetrics
         val conf: Configuration = resources.configuration
@@ -107,7 +113,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if(key == "language") {
+        if (key == "language") {
             val languageValue: String = (sharedPreferences?.getString(key, "en")).toString()
             onChangedLanguage(languageValue);
         }
